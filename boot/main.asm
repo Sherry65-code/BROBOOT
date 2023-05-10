@@ -109,12 +109,66 @@ _start:
 	mov al, 'f'
 	times 2 int 0x10
 	
+	; change curosr position
+	mov ah, 0x02
+	mov bh, 0x00
+	mov dh, 24
+	mov dl, 56
+	int 0x10
+
+	mov ah, 0x0e
+	mov al, 'M'
+	int 0x10
+	mov al, 'a'
+	int 0x10
+	mov al, 'd'
+	int 0x10
+	mov al, 'e'
+	int 0x10
+	mov al, ' '
+	int 0x10
+	mov al, 'b'
+	int 0x10
+	mov al, 'y'
+	int 0x10
+	mov al, ' '
+	int 0x10
+	mov al, 'P'
+	int 0x10
+	mov al, 'a'
+	int 0x10
+	mov al, 'r'
+	int 0x10
+	mov al, 'a'
+	int 0x10
+	mov al, 'm'
+	int 0x10
+	mov al, 'b'
+	int 0x10
+	mov al, 'i'
+	int 0x10
+	mov al, 'r'
+	int 0x10
+	mov al, ' '
+	int 0x10
+	mov al, 'S'
+	int 0x10
+	mov al, 'i'
+	int 0x10
+	mov al, 'n'
+	int 0x10
+	mov al, 'g'
+	int 0x10
+	mov al, 'h'
+	int 0x10
+
 	; wait for input
-	mov ah, 0
-	int 0x16
-	cmp al, 'p'
-	je poweroff
-	
+	loop:
+		mov ah, 0
+		int 0x16
+		cmp al, 'p'
+		je poweroff
+		jmp loop
 	jmp $
 
 poweroff:
