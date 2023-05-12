@@ -66,7 +66,7 @@ _start:
 		mov ah, 90h
 		add di, 40
 		call printc
-		cmp di, 3000
+		cmp di, 3060
 		jle loop1
 
 	; title bar heading
@@ -75,8 +75,53 @@ _start:
 	mov di, 344
 	call printc
 	
-	jmp $
+	; motivational line (left)
+	mov si, motivationalline
+	mov ah, 0x9f
+	mov di, 664
+	call printc
+
+	; next line (left)
+	mov si, motivationalline2
+	mov ah, 0x9f
+	mov di, 824
+	call printc	
+
+	; boot text (left)
+	mov si, boottext
+	mov ah, 0x9f
+	mov di, 2584
+	call printc
 	
+	; bottom text (left)
+	mov si, lefttext
+	mov ah, 0x9f
+	mov di, 2744
+	call printc
+	
+	; my name (left)
+	mov si, trademark
+	mov ah, 0x9f
+	mov di, 2904
+	call printc
+
+	; listen for keyboard events
+	keyboardloop:
+		mov ah, 0
+		int 0x16
+		cmp al, 'r'
+		je reboot
+		cmp al, 'b'
+		je reboot
+		jmp keyboardloop
+
+	jmp $
+
+	motivationalline db "Booting up with BROCODE: 100% bro-approved code for", 0
+	motivationalline2 db "maximum boot-tastic vibes!", 0
+	boottext db "Press b to boot into Existing OS", 0
+	trademark db "Made by Parambir Singh :)", 0	
+	lefttext db "Press r to reboot", 0
 	bootname db "BROBOOT", 0
 	topbar db "                                                            ", 0
 

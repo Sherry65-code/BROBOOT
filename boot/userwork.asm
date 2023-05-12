@@ -34,5 +34,17 @@ printsc:
 	mov word [es:di], ax   	; Store the character and attribute byte at ES:DI
 	add di, 2  				; Increment DI to move to the next chr position
 	ret
+
+poweroff:
+	mov ax, 0x5307   ; Set AX = 5307h (ACPI shutdown command)
+	mov bx, 0x0001   ; Set BX = 0001h (ACPI shutdown type, 0001h = power off)
+	int 0x15         ; Invoke the BIOS ACPI interrupt to trigger the shutdown
+
+reboot:
+	mov ah, 0
+	int 19h 		; revoke reboot function	
+
+	
+
 return:
 	ret
