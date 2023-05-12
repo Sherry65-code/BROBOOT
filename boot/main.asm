@@ -29,154 +29,58 @@ VolumeID			dd 12345678h		; Volume ID: any number
 VolumeLabel			db "BROBOOT    " 	; Volume Label
 FileSystem			db "FAT12"			; File system type: don't change!
 
+%include "boot/userwork.asm"
+
 _start:
-	mov ax, 0x7c00						; move 0x7c00 to ax
-	mov ds, ax 							; set data segment to where we are loaded
+	mov ax, 07C0h		; move 0x7c00 into ax
+	mov ds, ax			; set data segment to where we're loaded
 
-	mov ah, 0 							; changing to 03h video mode
-	mov al, 0x03
-	int 0x10 							; switched to 80x25
+	; A USER GUIDE TO REGISTERS
+	; dh = row
+	; dl = column
+	; ah = color (bg+fg)
+	; di = pointer for printc funtcion and printsc function
+	; GUIDE ENDS HERE
 
-	; print Heading
-	mov ah, 0x09 						; Set bg and fg color function
-	mov al, ' ' 						; fill up character
-	mov bh, 0 							; page number
-	mov bl, 0xf1 						; 0xab a => bg b => fg
-	mov cx, 80 							; number of characters to update
-	mov dx, 0 							; column
-	mov bp, 0 							; row
-	int 0x10 							; done	
-
-	; printing broboot
-	mov ah, 0x0e
-	mov al, 'B'
-	int 0x10
-	mov al, 'R'
-	int 0x10
-	mov al, 'O'
-	int 0x10
-	mov al, 'B'
-	int 0x10
-	mov al, 'O'
-	int 0x10
-	int 0x10
-	mov al, 'T'
-	int 0x10	
-		
-	; changing cursor position
-	mov ah, 0x02
-	mov bh, 0x00
-	mov dh, 1 							; row
-	mov dl, 0 							; column
-	int 0x10
-	
-	mov ah, 0x09
-	mov al, ' '
-	mov bh, 0
-	mov bl, 0x1f
-	mov cx, 2000
-	mov dx, 0
-	mov bp, 3
-	int 0x10
-
-	; change curosr position
-	mov ah, 0x02
-	mov bh, 0x00
-	mov dh, 3
-	mov dl, 0
-	int 0x10
-
-	; write poweroff command
-	mov ah, 0x0e
-	mov al, 'P'
-	int 0x10
-	mov al, ' '
-	int 0x10
-	mov al, 'P'
-	int 0x10
-	mov al, 'o'
-	int 0x10
-	mov al, 'w'
-	int 0x10
-	mov al, 'e'
-	int 0x10
-	mov al, 'r'
-	int 0x10
-	mov al, ' '
-	int 0x10
-	mov al, 'O'
-	int 0x10
-	mov al, 'f'
-	times 2 int 0x10
-	
-	; change curosr position
-	mov ah, 0x02
-	mov bh, 0x00
-	mov dh, 24
-	mov dl, 56
-	int 0x10
-
-	mov ah, 0x0e
-	mov al, 'M'
-	int 0x10
-	mov al, 'a'
-	int 0x10
-	mov al, 'd'
-	int 0x10
-	mov al, 'e'
-	int 0x10
-	mov al, ' '
-	int 0x10
-	mov al, 'b'
-	int 0x10
-	mov al, 'y'
-	int 0x10
-	mov al, ' '
-	int 0x10
-	mov al, 'P'
-	int 0x10
-	mov al, 'a'
-	int 0x10
-	mov al, 'r'
-	int 0x10
-	mov al, 'a'
-	int 0x10
-	mov al, 'm'
-	int 0x10
-	mov al, 'b'
-	int 0x10
-	mov al, 'i'
-	int 0x10
-	mov al, 'r'
-	int 0x10
-	mov al, ' '
-	int 0x10
-	mov al, 'S'
-	int 0x10
-	mov al, 'i'
-	int 0x10
-	mov al, 'n'
-	int 0x10
-	mov al, 'g'
-	int 0x10
-	mov al, 'h'
-	int 0x10
-
-	; wait for input
-	loop:
-		mov ah, 0
-		int 0x16
-		cmp al, 'p'
-		je poweroff
-		jmp loop
-	jmp $
-
-poweroff:
+	; switch to 03h video mode
 	mov ah, 0
-	mov dl, 0
-	int 0x19
-	jmp .done
+	mov al, 3
+	int 0x10
+
+	; change to video memory location
+	mov ax, 0B800h     ; Set AX to the starting address of the video memory
+	mov es, ax         ; Set ES to the video memory segment
+	mov di, 0 		   ; set di to the beginning of the video memory
+	
+	; main()
+
+	; top bar
+	mov si, topbar
+	mov ah, 10h
+	mov di, 340
+	call printc
+		
+	; main body
+	loop1:
+		mov si, topbar
+		mov ah, 90h
+		add di, 40
+		call printc
+		cmp di, 3000
+		jle loop1
+
+	; title bar heading
+	mov si, bootname
+	mov ah, 0x1f
+	mov di, 344
+	call printc
+	
+	jmp $
+	
+	bootname db "BROBOOT", 0
+	topbar db "                                                            ", 0
+
 .done:
 	ret
-	times 510-($-$$) db 0
-	db 0x55, 0xaa
+	times 510-($-$$) db 0	; Pad remainder of boot sector with 0s
+	dw 0xAA55		; The standard PC boot signature
