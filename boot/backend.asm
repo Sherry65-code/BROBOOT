@@ -29,11 +29,6 @@ printc:
 	add di, 2  				; Increment DI to move to the next chr position
 	jmp printc
 
-printsc:
-	cmp al, 0
-	mov word [es:di], ax   	; Store the character and attribute byte at ES:DI
-	add di, 2  				; Increment DI to move to the next chr position
-	ret
 
 poweroff:
 	mov ax, 0x5307   ; Set AX = 5307h (ACPI shutdown command)
@@ -45,7 +40,6 @@ reboot:
 	mov ah, 0
 	int 19h 		; revoke reboot function	
 	ret
-	
 
 return:
 	ret

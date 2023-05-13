@@ -1,15 +1,17 @@
 %if 0; 
  * Title: A Simple Bootloader For the Mighty
  * Author: Parambir Singh AKA Hecker (Sherry65-code)[github]
- * Website: http://tuxnotesx.web.app/
-%endif; 	
+ * Website: https://tuxnotesx.web.app/
+%endif; 
+	
 	BITS 16
 
 	jmp short _start	; Jump past disk description section
+;	jmp _start
 	nop	
 	
 ; Disk description table, to make it a valid floppy
-OEMLabel			db "BROBOOT" 		; Disk label
+OEMLabel			db "BROBOOT " 		; Disk label
 BytesPerSector		dw 512				; Bytes per sector
 SectorsPerCluster	db 1				; Sectors per cluster
 ReservedForBoot		dw 1				; Reserved sectors for boot record
@@ -26,7 +28,7 @@ DriveNo				dw 0				; Drive No: 0
 Signature			db 41				; Drive signature: 41 for floppy
 VolumeID			dd 12345678h		; Volume ID: any number
 VolumeLabel			db "BROBOOT    " 	; Volume Label
-FileSystem			db "FAT12"			; File system type: don't change!
+FileSystem			db "FAT12   "		; File system type: don't change!
 
 
 %include "boot/backend.asm"
@@ -54,6 +56,16 @@ _start:
 	mov di, 0 		   ; set di to the beginning of the video memory
 	
 	; main()
+	
+	; disable the blinking attribute to get all the colors avaliable to us
+
+	mov ah, 10h     ; Set up the video interrupt function
+ 	mov al, 3h      ; Function 3h is used to set the attribute mode
+ 	mov bh, 0h      ; Page number (usually 0 for the default page)
+ 	mov bl, 0h      ; Attribute mode (0h disables blinking)
+ 	int 10h         ; Call the video interrupt
+	
+
 
 	; top bar
 	mov si, topbar
@@ -130,4 +142,4 @@ _start:
 .done:
 	ret
 	times 510-($-$$) db 0	; Pad remainder of boot sector with 0s
-	dw 0xAA55		; The standard PC boot signature
+	db 0x55, 0xaa		; The standard PC boot signature
