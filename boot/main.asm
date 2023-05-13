@@ -3,7 +3,6 @@
  * Author: Parambir Singh AKA Hecker (Sherry65-code)[github]
  * Website: http://tuxnotesx.web.app/
 %endif; 	
-
 	BITS 16
 
 	jmp short _start	; Jump past disk description section
@@ -29,12 +28,14 @@ VolumeID			dd 12345678h		; Volume ID: any number
 VolumeLabel			db "BROBOOT    " 	; Volume Label
 FileSystem			db "FAT12"			; File system type: don't change!
 
-%include "boot/userwork.asm"
+
+%include "boot/backend.asm"
 
 _start:
 	mov ax, 07C0h		; move 0x7c00 into ax
 	mov ds, ax			; set data segment to where we're loaded
 
+	
 	; A USER GUIDE TO REGISTERS
 	; dh = row
 	; dl = column
@@ -48,8 +49,8 @@ _start:
 	int 0x10
 
 	; change to video memory location
-	mov ax, 0B800h     ; Set AX to the starting address of the video memory
-	mov es, ax         ; Set ES to the video memory segment
+ 	mov ax, 0B800h     ; Set AX to the starting address of the video memory
+  	mov es, ax         ; Set ES to the video memory segment
 	mov di, 0 		   ; set di to the beginning of the video memory
 	
 	; main()
@@ -124,6 +125,7 @@ _start:
 	lefttext db "Press r to reboot", 0
 	bootname db "BROBOOT", 0
 	topbar db "                                                            ", 0
+
 
 .done:
 	ret

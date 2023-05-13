@@ -39,11 +39,12 @@ poweroff:
 	mov ax, 0x5307   ; Set AX = 5307h (ACPI shutdown command)
 	mov bx, 0x0001   ; Set BX = 0001h (ACPI shutdown type, 0001h = power off)
 	int 0x15         ; Invoke the BIOS ACPI interrupt to trigger the shutdown
+	ret
 
 reboot:
 	mov ah, 0
 	int 19h 		; revoke reboot function	
-
+	ret
 	
 
 return:
