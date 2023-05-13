@@ -124,8 +124,6 @@ _start:
 		int 0x16
 		cmp al, 'r'
 		je reboot
-		cmp al, 'b'
-		je reboot
 		jmp keyboardloop
 
 	jmp $
