@@ -99,13 +99,13 @@ _start:
 	mov ah, 0x9f
 	mov di, 824
 	call printc	
-
-	; boot text (left)
-	mov si, boottext
-	mov ah, 0x9f
-	mov di, 2584
-	call printc
 	
+	; next line (left)
+	mov si, motivationalline3
+	mov ah, 0x9f
+	mov di, 984
+	call printc
+
 	; bottom text (left)
 	mov si, lefttext
 	mov ah, 0x9f
@@ -129,11 +129,11 @@ _start:
 		jmp keyboardloop
 
 	jmp $
-
-	motivationalline db "Booting up with BROCODE: 100% bro-approved code for", 0
-	motivationalline2 db "maximum boot-tastic vibes!", 0
-	boottext db "Press b to boot into Existing OS", 0
-	trademark db "Made by Parambir Singh :)", 0	
+	
+	motivationalline db "Whoopsie daisy! OS went AWOL. Looks like it's playing", 0
+	motivationalline2 db "hide-&-seek but don't worry, we'll find it soon. In the", 0
+	motivationalline3 db "meantime enjoy the show!", 0
+	trademark db "Made by Parambir Singh", 0	
 	lefttext db "Press r to reboot", 0
 	bootname db "BROBOOT", 0
 	topbar db "                                                            ", 0
