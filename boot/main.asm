@@ -88,24 +88,6 @@ _start:
 	mov di, 344
 	call printc
 	
-	; motivational line (left)
-	mov si, motivationalline
-	mov ah, 0x9f
-	mov di, 664
-	call printc
-
-	; next line (left)
-	mov si, motivationalline2
-	mov ah, 0x9f
-	mov di, 824
-	call printc	
-	
-	; next line (left)
-	mov si, motivationalline3
-	mov ah, 0x9f
-	mov di, 984
-	call printc
-
 	; bottom text (left)
 	mov si, lefttext
 	mov ah, 0x9f
@@ -118,24 +100,28 @@ _start:
 	mov di, 2904
 	call printc
 
-	; listen for keyboard events
-	keyboardloop:
+	boot:
+		mov si, pass
+		mov ah, 0x9f
+		mov di, 664
+		call printc
+
+
+	listen:
 		mov ah, 0
 		int 0x16
 		cmp al, 'r'
 		je reboot
-		jmp keyboardloop
+		jmp listen
 
 	jmp $
 	
-	motivationalline db "Whoopsie daisy! OS went AWOL. Looks like it's playing", 0
-	motivationalline2 db "hide-&-seek but don't worry, we'll find it soon. In the", 0
-	motivationalline3 db "meantime enjoy the show!", 0
-	trademark db "Made by Parambir Singh", 0	
+	pass db "Booting into Bromine OS...", 0
+	nopass db "No OS Found", 0
+	trademark db "Made by Parambir Singh :)" , 0	
 	lefttext db "Press r to reboot", 0
 	bootname db "BROBOOT", 0
 	topbar db "                                                            ", 0
-
 
 .done:
 	ret
