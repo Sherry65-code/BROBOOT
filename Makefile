@@ -1,8 +1,8 @@
 build: boot/main.asm
-	nasm -f bin -o build/main.bin boot/main.asm
+	nasm -f bin -o build/main.iso boot/main.asm
 
-run: build/main.bin
-	qemu-system-i386 build/main.bin
+run: build/main.iso
+	qemu-system-i386 build/main.iso
 
-clean: build/main.bin
-	rm -r build/main.bin
+clean: build/main.iso
+	rm -r build/main.iso
